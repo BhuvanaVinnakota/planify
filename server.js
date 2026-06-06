@@ -27,14 +27,14 @@ app.use(session({
 // Update host, user, password to match your MySQL setup
 // ============================================================
 const db = mysql.createPool({
-  host:             'localhost',
-  user:             'root',
-  password:         '',          // <-- Change to your MySQL password
-  database:         'planify_db',
+  host:             process.env.MYSQLHOST     || 'localhost',
+  user:             process.env.MYSQLUSER     || 'root',
+  password:         process.env.MYSQLPASSWORD || '',
+  database:         process.env.MYSQLDATABASE || 'planify_db',
+  port:             process.env.MYSQLPORT     || 3306,
   waitForConnections: true,
   connectionLimit:  10
 });
-
 async function initDB() {
   try {
     await db.execute(`
