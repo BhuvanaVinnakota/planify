@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planify — Sticky Wall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="sticky.css">
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="mobile-logo-text">Planify</span>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="9" y="3" width="6" height="4" rx="1" stroke="white" stroke-width="2"/>
+          <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Planify</h1>
+    </div>
+    <p class="menu-label">Main Menu</p>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-link"><i class="fas fa-table-cells-large"></i> Today</a>
+      <a href="/upcoming"  class="nav-link"><i class="fas fa-calendar-alt"></i> Upcoming</a>
+      <a href="/sticky"    class="nav-link active"><i class="fas fa-note-sticky"></i> Sticky Wall</a>
+      <a href="/profile"   class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <hr class="sidebar-divider">
+      <button class="logout-btn" onclick="showLogoutModal()"><i class="fas fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </aside>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="page-content">
+        <div class="page-header">
+          <div class="header-icon"><i class="fas fa-note-sticky"></i></div>
+          <div>
+            <h1>Sticky Wall 📌</h1>
+            <p>Jot down quick thoughts and reminders.</p>
+          </div>
+        </div>
+        <form class="note-form" onsubmit="addNote(event)">
+          <textarea id="note-input" class="note-textarea" placeholder="Write a note..." rows="3" required></textarea>
+          <button type="submit" class="btn-add-note"><i class="fas fa-plus"></i> Add Note</button>
+        </form>
+        <div id="notes-container"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="logout-modal">
+    <div class="modal-box">
+      <h2>Log out of Planify?</h2>
+      <p>Your data will be saved.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+        <button class="btn-logout-confirm" onclick="confirmLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    const COLORS = ['#fef08a','#fbcfe8','#bfdbfe','#bbf7d0','#e9d5ff','#fed7aa'];
+    function getRotation(id) {
+      const hash = String(id).split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+      return ((hash % 7) - 3) + 'deg';
+    }
+
+    window.onload = async function () { await checkAuth(); await loadNotes(); };
+
+    async function loadNotes() {
+      const notes = await api('GET', '/api/notes');
+      const container = document.getElementById('notes-container');
+      if (notes.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-note-sticky"></i></div><p>No notes yet. Write something above!</p></div>`;
+        return;
+      }
+      container.innerHTML = `<div class="notes-grid">${notes.map(note => `
+        <div class="sticky-note" style="background:${note.color};transform:rotate(${getRotation(note.id)})">
+          <p class="sticky-note-text">${note.text}</p>
+          <div class="sticky-note-footer">
+            <button class="note-delete-btn" onclick="deleteNote(${note.id})"><i class="fas fa-xmark"></i></button>
+          </div>
+        </div>`).join('')}</div>`;
+    }
+
+    async function addNote(e) {
+      e.preventDefault();
+      const input = document.getElementById('note-input');
+      const text  = input.value.trim();
+      if (!text) return;
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      await api('POST', '/api/notes', { text, color });
+      input.value = '';
+      await loadNotes();
+    }
+
+    async function deleteNote(id) { await api('DELETE', '/api/notes/' + id); await loadNotes(); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planify — Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="mobile-logo-text">Planify</span>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="9" y="3" width="6" height="4" rx="1" stroke="white" stroke-width="2"/>
+          <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Planify</h1>
+    </div>
+    <p class="menu-label">Main Menu</p>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-link"><i class="fas fa-table-cells-large"></i> Today</a>
+      <a href="/upcoming"  class="nav-link"><i class="fas fa-calendar-alt"></i> Upcoming</a>
+      <a href="/sticky"    class="nav-link"><i class="fas fa-note-sticky"></i> Sticky Wall</a>
+      <a href="/profile"   class="nav-link active"><i class="fas fa-user"></i> Profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <hr class="sidebar-divider">
+      <button class="logout-btn" onclick="showLogoutModal()"><i class="fas fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </aside>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="page-content">
+        <p class="page-title">Profile</p>
+        <p class="page-subtitle">Your personal productivity stats.</p>
+
+        <div class="profile-card">
+          <div class="profile-cover"></div>
+          <div class="profile-body">
+            <div class="profile-avatar-row">
+              <div class="avatar-ring">
+                <div class="avatar-inner">
+                  <span class="avatar-initials" id="avatar-initials">--</span>
+                </div>
+              </div>
+            </div>
+            <p class="profile-name" id="profile-name">Loading...</p>
+            <p class="profile-email" id="profile-email"></p>
+            <p class="profile-bio">Productivity Enthusiast</p>
+
+            <div class="stats-row">
+              <div class="stat-mini-card pink">
+                <div class="stat-mini-icon"><i class="fas fa-list-check"></i></div>
+                <div><p class="stat-mini-label">Total Tasks</p><p class="stat-mini-value" id="p-total">0</p></div>
+              </div>
+              <div class="stat-mini-card green">
+                <div class="stat-mini-icon"><i class="fas fa-circle-check"></i></div>
+                <div><p class="stat-mini-label">Completed</p><p class="stat-mini-value" id="p-completed">0</p></div>
+              </div>
+              <div class="stat-mini-card orange">
+                <div class="stat-mini-icon"><i class="fas fa-clock"></i></div>
+                <div><p class="stat-mini-label">Pending</p><p class="stat-mini-value" id="p-pending">0</p></div>
+              </div>
+            </div>
+
+            <div class="completion-card">
+              <h3>Completion Rate</h3>
+              <div class="progress-svg-wrap">
+                <svg width="150" height="150">
+                  <defs>
+                    <linearGradient id="pg2" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%"   stop-color="#e8527a"/>
+                      <stop offset="100%" stop-color="#d4b028"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="75" cy="75" r="68" fill="none" stroke="#ffe8f0" stroke-width="14"/>
+                  <circle id="p-ring" cx="75" cy="75" r="68"
+                          fill="none" stroke="url(#pg2)" stroke-width="14"
+                          stroke-linecap="round"
+                          stroke-dasharray="427.26" stroke-dashoffset="427.26"
+                          style="transform:rotate(-90deg);transform-origin:75px 75px;transition:stroke-dashoffset 0.8s ease-in-out"/>
+                </svg>
+                <div class="progress-text-center">
+                  <span class="progress-pct" id="p-pct">0%</span>
+                  <span class="progress-completed-label">COMPLETED</span>
+                </div>
+              </div>
+              <p class="progress-motivation" id="p-motivation">Get started!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="logout-modal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                stroke="#e8527a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Log out of Planify?</h2>
+      <p>You'll need to sign in again to access your tasks and notes.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+        <button class="btn-logout-confirm" onclick="confirmLogout()">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    window.onload = async function () {
+      const user = await checkAuth();
+      if (!user) return;
+      document.getElementById('profile-name').textContent  = user.name;
+      document.getElementById('profile-email').textContent = user.email;
+      const initials = user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      document.getElementById('avatar-initials').textContent = initials;
+      const tasks = await api('GET', '/api/tasks');
+      const total = tasks.length, completed = tasks.filter(t => t.completed).length, pending = tasks.filter(t => !t.completed).length;
+      const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+      document.getElementById('p-total').textContent     = total;
+      document.getElementById('p-completed').textContent = completed;
+      document.getElementById('p-pending').textContent   = pending;
+      document.getElementById('p-pct').textContent       = pct + '%';
+      document.getElementById('p-ring').style.strokeDashoffset = 427.26 - (pct / 100) * 427.26;
+      const labels = ['Get started!','Keep going!','Halfway!','Awesome! 🎉','Perfect! 🏆'];
+      document.getElementById('p-motivation').textContent =
+        pct === 100 ? labels[4] : pct >= 75 ? labels[3] : pct >= 50 ? labels[2] : pct > 0 ? labels[1] : labels[0];
+    };
+  </script>
+</body>
+</html>

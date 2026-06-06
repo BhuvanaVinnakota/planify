@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planify — Upcoming</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="upcoming.css">
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="mobile-logo-text">Planify</span>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="9" y="3" width="6" height="4" rx="1" stroke="white" stroke-width="2"/>
+          <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Planify</h1>
+    </div>
+    <p class="menu-label">Main Menu</p>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-link"><i class="fas fa-table-cells-large"></i> Today</a>
+      <a href="/upcoming"  class="nav-link active"><i class="fas fa-calendar-alt"></i> Upcoming</a>
+      <a href="/sticky"    class="nav-link"><i class="fas fa-note-sticky"></i> Sticky Wall</a>
+      <a href="/profile"   class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <hr class="sidebar-divider">
+      <button class="logout-btn" onclick="showLogoutModal()"><i class="fas fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </aside>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="page-content">
+        <div class="page-banner">
+          <div class="banner-icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="banner-text">
+            <h1>Upcoming Tasks</h1>
+            <p id="banner-subtitle">Focus on what's left to do.</p>
+          </div>
+        </div>
+        <div class="widget-card">
+          <div id="task-list"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="logout-modal">
+    <div class="modal-box">
+      <h2>Log out of Planify?</h2>
+      <p>Your data will be saved.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+        <button class="btn-logout-confirm" onclick="confirmLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    window.onload = async function () {
+      await checkAuth();
+      const allTasks = await api('GET', '/api/tasks');
+      const pending  = allTasks.filter(t => !t.completed);
+      document.getElementById('banner-subtitle').textContent =
+        pending.length > 0 ? pending.length + ' task' + (pending.length > 1 ? 's' : '') + ' remaining' : 'All done — great work!';
+      renderPending(pending);
+    };
+
+    function renderPending(tasks) {
+      const container = document.getElementById('task-list');
+      if (tasks.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-calendar-check"></i></div><h3>All caught up!</h3><p>No pending tasks right now.</p></div>`;
+        return;
+      }
+      const badgeStyle = {
+        high:   'background:#fee2e2;color:#dc2626;border:1px solid #fca5a5',
+        medium: 'background:#ffedd5;color:#ea580c;border:1px solid #fdba74',
+        low:    'background:#dcfce7;color:#16a34a;border:1px solid #86efac'
+      };
+      container.innerHTML = tasks.map(t => `
+        <div class="task-item ${t.priority}">
+          <span class="task-title">${t.title}</span>
+          <span class="priority-badge" style="${badgeStyle[t.priority]}">${t.priority}</span>
+        </div>`).join('');
+    }
+  </script>
+</body>
+</html>

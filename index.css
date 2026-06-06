@@ -1,0 +1,294 @@
+/* ============================================================
+   index.css — Login page styles
+   ============================================================ */
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(160deg, #ffe0ea 0%, #ffd4b0 55%, #ffe870 100%);
+}
+
+/* ---- Animated soft blobs ---- */
+.login-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(55px);
+  animation: floatBlob ease-in-out infinite;
+}
+
+.blob-1 {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(255,120,160,0.38), transparent);
+  top: -15%; left: -10%;
+  animation-duration: 9s;
+}
+
+.blob-2 {
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(255,220,150,0.42), transparent);
+  bottom: -12%; right: -10%;
+  animation-duration: 11s;
+  animation-delay: -3s;
+}
+
+.blob-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(240,144,96,0.3), transparent);
+  top: 55%; left: 25%;
+  animation-duration: 10s;
+  animation-delay: -5s;
+}
+
+.blob-4 {
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(255,248,200,0.55), transparent);
+  top: 10%; right: 15%;
+  animation-duration: 13s;
+  animation-delay: -7s;
+}
+
+@keyframes floatBlob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(16px, -22px) scale(1.04); }
+  66%       { transform: translate(-12px, 16px) scale(0.96); }
+}
+
+/* ---- Login Card ---- */
+.login-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  padding: 16px;
+  animation: cardEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(32px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.login-card {
+  background: white;
+  border: 1.5px solid #f5d5e5;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(232,82,122,0.1);
+}
+
+/* Card header */
+.card-header {
+  padding: 36px 36px 28px;
+  text-align: center;
+  background: linear-gradient(135deg, #c4315c 0%, #e8527a 50%, #f09060 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-header::before {
+  content: '';
+  position: absolute;
+  top: -40%; left: -20%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+  border-radius: 50%;
+}
+
+.header-logo {
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border: 1.5px solid rgba(255,255,255,0.3);
+}
+
+.card-header h1 {
+  color: white;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.card-header p {
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+}
+
+/* Feature strip */
+.feature-strip {
+  display: flex;
+  gap: 8px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #fff5f8, #fde8f2);
+  border-bottom: 1.5px solid #f5d5e5;
+}
+
+.feature-pill {
+  flex: 1;
+  text-align: center;
+  padding: 10px 8px;
+  background: white;
+  border-radius: 12px;
+  border: 1.5px solid #f5d5e5;
+  box-shadow: 0 2px 6px rgba(232,82,122,0.05);
+}
+
+.feature-pill .pill-icon { font-size: 16px; margin-bottom: 2px; }
+.feature-pill .pill-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e8527a;
+}
+.feature-pill .pill-sub {
+  display: block;
+  font-size: 10px;
+  color: #d4b028;
+}
+
+/* Tab switcher (Sign In / Register) */
+.tab-bar {
+  display: flex;
+  margin: 20px 36px 0;
+  background: #fde8f2;
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  color: #d4b028;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background: white;
+  color: #e8527a;
+  box-shadow: 0 2px 10px rgba(232,82,122,0.1);
+}
+
+/* Card body / form */
+.card-body {
+  padding: 20px 36px 36px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e8527a;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #d4b028;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.form-input {
+  width: 100%;
+  padding: 13px 14px 13px 40px;
+  background: #fff5f8;
+  border: 1.5px solid #f5d5e5;
+  border-radius: 14px;
+  color: #1e293b;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.25s;
+}
+
+.form-input::placeholder { color: #d4b028; }
+
+.form-input:focus {
+  border-color: #f09060;
+  box-shadow: 0 0 0 3px rgba(240,144,96,0.12);
+}
+
+/* Error message */
+.error-msg {
+  display: none;
+  background: #fff5f8;
+  border: 1.5px solid #f5d5e5;
+  color: #e8527a;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+/* Submit button */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #e8527a, #f09060, #d4b028);
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 8px 24px rgba(232,82,122,0.22);
+  margin-top: 4px;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(232,82,122,0.28);
+}
+
+.btn-submit:active { transform: translateY(0); }
+
+/* Form hidden state */
+.login-form, .register-form { display: none; }
+.login-form.active, .register-form.active { display: block; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card-header { padding: 28px 24px 20px; }
+  .feature-strip { padding: 12px 24px; }
+  .tab-bar { margin-left: 24px; margin-right: 24px; }
+  .card-body { padding: 16px 24px 28px; }
+}

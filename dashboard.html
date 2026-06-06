@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planify — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="mobile-logo-text">Planify</span>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="9" y="3" width="6" height="4" rx="1" stroke="white" stroke-width="2"/>
+          <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Planify</h1>
+    </div>
+    <p class="menu-label">Main Menu</p>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-link active"><i class="fas fa-table-cells-large"></i> Today</a>
+      <a href="/upcoming"  class="nav-link"><i class="fas fa-calendar-alt"></i> Upcoming</a>
+      <a href="/sticky"    class="nav-link"><i class="fas fa-note-sticky"></i> Sticky Wall</a>
+      <a href="/profile"   class="nav-link"><i class="fas fa-user"></i> Profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <hr class="sidebar-divider">
+      <button class="logout-btn" onclick="showLogoutModal()">
+        <i class="fas fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </aside>
+
+  <div class="app-layout">
+    <main class="main-content">
+      <div class="page-content">
+
+        <div class="page-header">
+          <div>
+            <h1 id="greeting">Good Morning!</h1>
+            <p>Ready to crush your goals today?</p>
+          </div>
+          <div class="date-badge">
+            <i class="fas fa-calendar"></i>
+            <span id="current-date"></span>
+          </div>
+        </div>
+
+        <form class="task-form" onsubmit="addTask(event)">
+          <input type="text" id="task-input" class="task-input" placeholder="Enter new task..." required>
+          <div class="priority-btns">
+            <button type="button" class="priority-btn high"   onclick="selectPriority('high')">High</button>
+            <button type="button" class="priority-btn medium selected" onclick="selectPriority('medium')">Medium</button>
+            <button type="button" class="priority-btn low"    onclick="selectPriority('low')">Low</button>
+          </div>
+          <button type="submit" class="btn-add-task"><i class="fas fa-plus"></i> Add Task</button>
+        </form>
+
+        <div class="stats-grid">
+          <div class="stats-card pink">
+            <div class="stats-icon"><i class="fas fa-list-check"></i></div>
+            <div><p class="stats-label">Total Tasks</p><p class="stats-value" id="stat-total">0</p></div>
+          </div>
+          <div class="stats-card green">
+            <div class="stats-icon"><i class="fas fa-circle-check"></i></div>
+            <div><p class="stats-label">Completed</p><p class="stats-value" id="stat-completed">0</p></div>
+          </div>
+          <div class="stats-card orange">
+            <div class="stats-icon"><i class="fas fa-clock"></i></div>
+            <div><p class="stats-label">Pending</p><p class="stats-value" id="stat-pending">0</p></div>
+          </div>
+          <div class="stats-card red">
+            <div class="stats-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <div><p class="stats-label">Overdue</p><p class="stats-value" id="stat-overdue">0</p></div>
+          </div>
+        </div>
+
+        <div class="main-grid">
+
+          <div class="widget-card">
+            <h2 class="section-title">Today's Tasks 🌟</h2>
+            <div id="task-list"></div>
+          </div>
+
+          <div class="right-col">
+
+            <div class="widget-card">
+              <div class="cal-header">
+                <h2 class="section-title" style="margin-bottom:0">Calendar 📅</h2>
+                <div class="cal-nav">
+                  <button class="cal-nav-btn" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                  <span class="cal-month-label" id="cal-month"></span>
+                  <button class="cal-nav-btn" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+              </div>
+              <div class="cal-days-header">
+                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+              </div>
+              <div class="cal-grid" id="cal-grid"></div>
+            </div>
+
+            <div class="widget-card">
+              <h2 class="section-title">Your Progress 📈</h2>
+              <div class="progress-wrap">
+                <div class="progress-svg-wrap">
+                  <svg width="150" height="150">
+                    <defs>
+                      <linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%"   stop-color="#e8527a"/>
+                        <stop offset="100%" stop-color="#d4b028"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="75" cy="75" r="68" fill="none" stroke="#ffe8f0" stroke-width="14"/>
+                    <circle id="progress-ring" cx="75" cy="75" r="68"
+                            fill="none" stroke="url(#pg)" stroke-width="14"
+                            stroke-linecap="round"
+                            stroke-dasharray="427.26"
+                            stroke-dashoffset="427.26"
+                            style="transform:rotate(-90deg);transform-origin:75px 75px;
+                                   transition:stroke-dashoffset 0.8s ease-in-out"/>
+                  </svg>
+                  <div class="progress-text-center">
+                    <span class="progress-pct" id="progress-pct">0%</span>
+                    <span class="progress-completed-label">COMPLETED</span>
+                  </div>
+                </div>
+                <p class="progress-motivation" id="progress-motivation">Get started!</p>
+              </div>
+            </div>
+
+            <div class="widget-card">
+              <h2 class="section-title">Priorities</h2>
+              <div class="chart-wrap">
+                <div class="chart-canvas-wrap">
+                  <canvas id="priority-chart"></canvas>
+                  <p class="chart-empty-msg" id="chart-empty-msg">No tasks yet</p>
+                </div>
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <div class="legend-item-left"><div class="legend-dot" style="background:#ef4444"></div>High Priority</div>
+                    <span class="legend-count" style="color:#ef4444" id="leg-high">0</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-item-left"><div class="legend-dot" style="background:#f97316"></div>Medium Priority</div>
+                    <span class="legend-count" style="color:#f97316" id="leg-medium">0</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-item-left"><div class="legend-dot" style="background:#22c55e"></div>Low Priority</div>
+                    <span class="legend-count" style="color:#22c55e" id="leg-low">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="logout-modal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                stroke="#e8527a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Log out of Planify?</h2>
+      <p>You'll need to sign in again to access your tasks and notes.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+        <button class="btn-logout-confirm" onclick="confirmLogout()">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+  <script>
+    let tasks = [], selectedPriority = 'medium', priorityChart = null, calendarDate = new Date();
+
+    window.onload = async function () {
+      const user = await checkAuth();
+      if (!user) return;
+      document.getElementById('greeting').textContent = getGreeting() + ', ' + user.name + '! 👋';
+      document.getElementById('current-date').textContent =
+        new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      await loadTasks();
+      renderCalendar();
+    };
+
+    function selectPriority(p) {
+      selectedPriority = p;
+      document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelector('.priority-btn.' + p).classList.add('selected');
+    }
+
+    async function loadTasks() {
+      tasks = await api('GET', '/api/tasks');
+      renderTasks(); updateStats(); updateProgress(); updatePriorityChart();
+    }
+
+    function renderTasks() {
+      const container = document.getElementById('task-list');
+      if (tasks.length === 0) {
+        container.innerHTML = `<div class="task-empty"><i class="fas fa-clipboard-list"></i><p>No tasks yet. Add one above!</p></div>`;
+        return;
+      }
+      const badgeStyle = {
+        high:   'background:#fee2e2;color:#dc2626;border:1px solid #fca5a5',
+        medium: 'background:#ffedd5;color:#ea580c;border:1px solid #fdba74',
+        low:    'background:#dcfce7;color:#16a34a;border:1px solid #86efac'
+      };
+      container.innerHTML = tasks.map(task => `
+        <div class="task-item ${task.priority}" style="opacity:${task.completed ? '0.65' : '1'}">
+          <div class="task-left">
+            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}
+                   onchange="toggleTask(${task.id})" id="task-${task.id}">
+            <label for="task-${task.id}" class="task-title ${task.completed ? 'completed' : ''}">${task.title}</label>
+          </div>
+          <div class="task-right">
+            <span class="priority-badge" style="${badgeStyle[task.priority]}">${task.priority}</span>
+            <button class="delete-btn" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>`).join('');
+    }
+
+    async function addTask(e) {
+      e.preventDefault();
+      const input = document.getElementById('task-input');
+      const title = input.value.trim();
+      if (!title) return;
+      await api('POST', '/api/tasks', { title, priority: selectedPriority });
+      input.value = '';
+      await loadTasks();
+    }
+
+    async function toggleTask(id) { await api('PUT', '/api/tasks/' + id); await loadTasks(); }
+    async function deleteTask(id) { await api('DELETE', '/api/tasks/' + id); await loadTasks(); }
+
+    function updateStats() {
+      document.getElementById('stat-total').textContent     = tasks.length;
+      document.getElementById('stat-completed').textContent = tasks.filter(t => t.completed).length;
+      document.getElementById('stat-pending').textContent   = tasks.filter(t => !t.completed).length;
+      document.getElementById('stat-overdue').textContent   = 0;
+    }
+
+    function updateProgress() {
+      const total = tasks.length, completed = tasks.filter(t => t.completed).length;
+      const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+      document.getElementById('progress-ring').style.strokeDashoffset = 427.26 - (pct / 100) * 427.26;
+      document.getElementById('progress-pct').textContent = pct + '%';
+      const labels = ['Get started!', 'Keep going!', 'Halfway!', 'Awesome!', 'Perfect!'];
+      document.getElementById('progress-motivation').textContent =
+        pct === 100 ? labels[4] : pct >= 75 ? labels[3] : pct >= 50 ? labels[2] : pct > 0 ? labels[1] : labels[0];
+    }
+
+    function updatePriorityChart() {
+      const high = tasks.filter(t => t.priority === 'high').length;
+      const medium = tasks.filter(t => t.priority === 'medium').length;
+      const low = tasks.filter(t => t.priority === 'low').length;
+      document.getElementById('leg-high').textContent   = high;
+      document.getElementById('leg-medium').textContent = medium;
+      document.getElementById('leg-low').textContent    = low;
+      if (high + medium + low === 0) {
+        document.getElementById('chart-empty-msg').style.display = 'block';
+        document.getElementById('priority-chart').style.display  = 'none';
+        return;
+      }
+      document.getElementById('chart-empty-msg').style.display = 'none';
+      document.getElementById('priority-chart').style.display  = 'block';
+      if (priorityChart) { priorityChart.data.datasets[0].data = [high, medium, low]; priorityChart.update(); return; }
+      priorityChart = new Chart(document.getElementById('priority-chart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: ['High','Medium','Low'], datasets: [{ data:[high,medium,low], backgroundColor:['#ef4444','#f97316','#22c55e'], borderWidth:0, hoverOffset:4 }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{display:false}} }
+      });
+    }
+
+    function renderCalendar() {
+      const today = new Date(), year = calendarDate.getFullYear(), month = calendarDate.getMonth();
+      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('cal-month').textContent = monthNames[month] + ' ' + year;
+      const firstDay = new Date(year, month, 1).getDay(), daysInMonth = new Date(year, month + 1, 0).getDate();
+      let html = '';
+      for (let i = 0; i < firstDay; i++) html += '<div></div>';
+      for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        html += `<div class="cal-day${isToday ? ' today' : ''}">${day}</div>`;
+      }
+      document.getElementById('cal-grid').innerHTML = html;
+    }
+
+    function prevMonth() { calendarDate.setMonth(calendarDate.getMonth() - 1); renderCalendar(); }
+    function nextMonth() { calendarDate.setMonth(calendarDate.getMonth() + 1); renderCalendar(); }
+  </script>
+</body>
+</html>
